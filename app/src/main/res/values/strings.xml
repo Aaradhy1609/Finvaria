@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">startup_hackathon2.0</string>
+    <string name="app_name">YouthHub</string>
+    <string name="finance">Finance</string>
+    <string name="legal">Legal</string>
+    <string name="education">Education</string>
+    <string name="ai_assistant">AI Assistant</string>
+    <string name="scan_document">Scan Document</string>
+    <string name="voice_input">Voice Input</string>
+    <string name="loan_advisor">Loan Advisor</string>
+    <string name="legal_advice">Legal Advice</string>
+    <string name="education_guidance">Education Guidance</string>
 </resources>

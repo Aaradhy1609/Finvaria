@@ -41,7 +41,7 @@ android {
 }
 
 dependencies {
-    // RunAnywhere SDK - Local AARs from GitHub Release v0.1.2-alpha
+    // RunAnywhere SDK - Local AARs from GitHub Release v0.1.3-alpha
     // Core SDK (4.01MB)
     implementation(files("libs/RunAnywhereKotlinSDK-release.aar"))
     // LLM Module (2.12MB) - includes llama.cpp with 7 ARM64 CPU variants
@@ -94,6 +94,37 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+
+    // Navigation
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // Icons Extended
+    implementation("androidx.compose.material:material-icons-extended:1.6.4")
+
+    // DataStore for preferences
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // Coil for image loading
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // Accompanist for permissions and animations
+    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.34.0")
+
+    // CameraX for document scanning
+    implementation("androidx.camera:camera-camera2:1.3.2")
+    implementation("androidx.camera:camera-lifecycle:1.3.2")
+    implementation("androidx.camera:camera-view:1.3.2")
+
+    // ML Kit for text recognition
+    implementation("com.google.mlkit:text-recognition:16.0.0")
+
+    // PDF Viewer
+    implementation("com.github.mhiew:android-pdf-viewer:3.2.0-beta.1")
+
+    // Lottie for animations
+    implementation("com.airbnb.android:lottie-compose:6.4.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

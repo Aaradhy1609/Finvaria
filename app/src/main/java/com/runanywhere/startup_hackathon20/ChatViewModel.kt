@@ -5,15 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.runanywhere.sdk.public.RunAnywhere
 import com.runanywhere.sdk.public.extensions.listAvailableModels
 import com.runanywhere.sdk.models.ModelInfo
+import com.runanywhere.startup_hackathon20.data.ChatMessage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
-// Simple Message Data Class
-data class ChatMessage(
-    val text: String,
-    val isUser: Boolean
-)
 
 // ViewModel
 class ChatViewModel : ViewModel() {

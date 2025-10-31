@@ -1,131 +1,232 @@
-# RunAnywhere SDK - Simple Chat App
+# YouthHub - Youth Empowerment Platform
 
-A simple Android chat application demonstrating the RunAnywhere SDK for on-device AI inference.
+A comprehensive Android app empowering Indian youth with AI-powered guidance on finance, legal
+matters, and education - completely offline capable!
 
-## What This App Does
+## What This App Offers
 
-This is a minimal example showing how to:
+YouthHub is your all-in-one companion for navigating the critical decisions of youth:
 
-1. Initialize the RunAnywhere SDK
-2. Download AI models (LLMs)
-3. Load models into memory
-4. Run text generation with streaming responses
+### Finance & Loan Guidance
 
-## Features
+- **Education Loans**: SBI Scholar Loan, Vidyalakshmi, Central Sector Interest Subsidy
+- **Personal & Business Loans**: HDFC, Mudra, and more
+- **Government Schemes**: PMAY, Mudra Yojana
+- **Smart Filtering**: Find loans by type, interest rate, tenure, and collateral requirements
+- **Detailed Information**: Complete eligibility, documents, benefits, and application process
 
-- **Model Management**: Download and load AI models directly in the app
-- **Real-time Streaming**: See AI responses generate word-by-word
-- **Simple UI**: Clean Jetpack Compose interface
-- **On-Device AI**: All inference runs locally on your Android device
+### Legal Advice
+
+- **Consumer Rights**: Defective products, refunds, complaints
+- **Employment Law**: Salary disputes, unfair termination
+- **Property Matters**: Title verification, disputes
+- **Cyber Crime**: Online fraud, phishing, identity theft
+- **Education Disputes**: Admission issues, fee refunds
+- **Step-by-step guidance** with relevant laws, required documents, and cost estimates
+
+### Education Guidance
+
+- **Course Information**: Engineering, Medical, Skill Development
+- **Entrance Exams**: JEE, NEET, state exams
+- **Top Institutions**: IITs, NITs, AIIMS, and more
+- **Scholarships**: Central Sector, INSPIRE, PM YASASVI, Minority scholarships
+- **Career Prospects**: Salary ranges, job opportunities
+- **Expert Tips**: From preparation to career planning
+
+### AI Assistant
+
+- **On-device AI**: Powered by RunAnywhere SDK
+- **Context-Aware**: Specialized responses for finance, legal, or education queries
+- **Offline Capable**: Works without internet after model download
+- **Multilingual Support**: English, Hindi, Hinglish, and 8 other Indian languages
+- **Smart Knowledge Base**: Falls back to curated information when AI isn't available
+
+### Document Scanner & Simplifier
+
+- **OCR Technology**: Extract text from documents using ML Kit
+- **Smart Simplification**: AI explains complex documents in simple language
+- **Key Points Extraction**: Highlights important information
+- **Warning Detection**: Alerts about critical clauses
+- **Support for**: Aadhaar, PAN, Passport, Legal notices, Contracts, and more
+
+### Voice Support
+
+- **Voice Input**: Ask questions naturally
+- **Hands-free Operation**: Convenient for on-the-go use
+- **Multiple Languages**: Works in your preferred language
+
+### Beautiful UI & Themes
+
+- **Multiple Themes**: Blue (Professional), Purple (Creative), Green (Fresh)
+- **Dark Mode**: Easy on the eyes
+- **Modern Design**: Material Design 3
+- **Smooth Animations**: Powered by Lottie
+- **Intuitive Navigation**: Easy-to-use bottom navigation
 
 ## Quick Start
 
-### 1. Build and Run
-
+### 1. Install and Launch
 ```bash
 ./gradlew assembleDebug
 # Or open in Android Studio and click Run
 ```
 
-### 2. Download a Model
+### 2. Choose Your Language
 
-1. Launch the app
-2. Tap "Models" in the top bar
-3. Choose a model (we recommend starting with "SmolLM2 360M Q8_0" - only 119 MB)
-4. Tap "Download" and wait for it to complete
+- Tap the settings icon
+- Select from 11 languages including Hindi, Hinglish, and regional languages
 
-### 3. Load the Model
+### 3. Download AI Model (Optional but Recommended)
 
-1. Once downloaded, tap "Load" on the model
-2. Wait for "Model loaded! Ready to chat." message
+1. Tap "Models" in settings
+2. Choose "Qwen 2.5 0.5B Instruct" (374 MB)
+3. Tap "Download" and wait
+4. Tap "Load" to activate AI
+5. Now enjoy smart, context-aware responses!
 
-### 4. Start Chatting!
+### 4. Start Exploring!
 
-1. Type a message in the text field
-2. Tap "Send"
-3. Watch the AI response generate in real-time
+- **Finance**: Browse loans or ask "What education loans are available?"
+- **Legal**: Get advice or ask "What to do if product is defective?"
+- **Education**: Explore courses or ask "How to prepare for JEE?"
+- **Scan Documents**: Use camera to scan and understand complex documents
 
-## Available Models
+## Features in Detail
 
-The app comes pre-configured with two models:
+### Smart Filtering System
 
-| Model | Size | Quality | Best For |
-|-------|------|---------|----------|
-| SmolLM2 360M Q8_0 | 119 MB | Basic | Testing, quick responses |
-| Qwen 2.5 0.5B Instruct Q6_K | 374 MB | Better | General conversations |
+- **Loans**: Filter by type (Education, Personal, Home, Business), interest rate, amount, tenure
+- **Legal**: Filter by category (Consumer Rights, Employment, Cyber Crime)
+- **Education**: Filter by type, cost, scholarships availability
+- **Sorting**: By relevance, ratings, cost, or name
 
-## Technical Details
+### Comprehensive Knowledge Base
 
-### SDK Components Used
+- **7 Loan Programs**: From ₹20,000 to ₹1.5 Crore
+- **5 Legal Scenarios**: With laws, documents, timelines, and costs
+- **4 Education Paths**: With entrance exams, institutions, and career prospects
+- **4 Major Scholarships**: Worth ₹3,000 to ₹1,25,000 per year
 
-- **RunAnywhere Core SDK**: Component architecture and model management
-- **LlamaCpp Module**: Optimized llama.cpp inference engine with 7 ARM64 variants
-- **Kotlin Coroutines**: For async operations and streaming
+### Multilingual Support
 
-### Architecture
+Supports 11 languages:
 
-```
-MyApplication (initialization)
-    ↓
-ChatViewModel (state management)
-    ↓
-ChatScreen (UI layer)
-```
+- English
+- हिन्दी (Hindi)
+- Hinglish
+- தமிழ் (Tamil)
+- తెలుగు (Telugu)
+- বাংলা (Bengali)
+- मराठी (Marathi)
+- ગુજરાતી (Gujarati)
+- ಕನ್ನಡ (Kannada)
+- മലയാളം (Malayalam)
+- ਪੰਜਾਬੀ (Punjabi)
 
-### Key Files
+## Technical Stack
 
-- `MyApplication.kt` - SDK initialization and model registration
-- `ChatViewModel.kt` - Business logic and state management
-- `MainActivity.kt` - UI components and composables
+### Core Technologies
 
-## Requirements
+- **Kotlin**: 100% Kotlin codebase
+- **Jetpack Compose**: Modern declarative UI
+- **Material Design 3**: Beautiful, accessible design
+- **Coroutines & Flow**: Reactive state management
 
-- Android 7.0 (API 24) or higher
-- ~200 MB free storage (for smallest model)
-- Internet connection (for downloading models)
+### AI & ML
 
-## Troubleshooting
+- **RunAnywhere SDK**: On-device LLM inference
+- **LlamaCpp**: Optimized for ARM64 processors
+- **ML Kit**: Text recognition for document scanning
+- **Context-Aware Prompting**: Specialized AI responses by category
 
-### Models not showing up
+### Additional Libraries
 
-- Wait a few seconds for SDK initialization
-- Tap "Refresh" in the Models section
-- Check logcat for initialization errors
+- **Navigation Compose**: Seamless screen transitions
+- **CameraX**: Document scanning
+- **Lottie**: Smooth animations
+- **Coil**: Efficient image loading
+- **DataStore**: Persistent preferences
 
-### Download fails
+## App Statistics
 
-- Check internet connection
-- Ensure sufficient storage space
-- Verify INTERNET permission in AndroidManifest.xml
+- **Languages Supported**: 11
+- **Loan Programs**: 7 major schemes
+- **Legal Scenarios**: 5 common situations
+- **Education Paths**: 4 comprehensive guides
+- **Scholarships**: 4 major programs
+- **Document Types**: 11 supported types
+- **Themes**: 3 color schemes + dark mode
 
-### App crashes during generation
+## Security & Privacy
 
-- Try the smaller model (SmolLM2 360M)
-- Close other apps to free memory
-- Check that `largeHeap="true"` is set in AndroidManifest.xml
+- **No Data Collection**: All data stays on your device
+- **Offline Capable**: Works without internet after setup
+- **On-device AI**: Your queries never leave your phone
+- **Secure Storage**: Uses AndroidX Security for preferences
+- **No Tracking**: Zero analytics or tracking
 
-### Generation is slow
+## Use Cases
 
-- This is normal for on-device inference
-- Smaller models run faster
-- Performance depends on device CPU
+### For Students
 
-## Next Steps
+- "Which education loan has lowest interest rate?"
+- "How to prepare for NEET exam?"
+- "Show me scholarships for engineering students"
+- Scan admission letters and understand terms
 
-Want to customize this app? Try:
+### For Young Professionals
 
-1. **Add more models** - Edit `MyApplication.kt` → `registerModels()`
-2. **Customize UI** - Edit `MainActivity.kt` compose functions
-3. **Add system prompts** - Modify message format in `ChatViewModel.kt`
-4. **Persist chat history** - Add Room database or DataStore
-5. **Add model parameters** - Explore temperature, top-k, top-p settings
+- "My employer hasn't paid salary for 2 months, what to do?"
+- "Need personal loan for wedding, suggest options"
+- "How to file consumer complaint for defective phone?"
 
-## Resources
+### For Entrepreneurs
 
-- [Full Quick Start Guide](app/src/main/java/com/runanywhere/startup_hackathon20/QUICK_START_ANDROID.md)
-- [RunAnywhere SDK Repository](https://github.com/RunanywhereAI/runanywhere-sdks)
-- [SDK Documentation](https://github.com/RunanywhereAI/runanywhere-sdks/blob/main/CLAUDE.md)
+- "Tell me about Mudra loan for small business"
+- "What documents needed for business loan?"
+- Scan legal contracts and understand obligations
+
+### For Everyone
+
+- "Education loan vs personal loan for studies?"
+- "My Flipkart order is defective, what are my rights?"
+- "How to report cyber fraud?"
+
+## Roadmap
+
+Planned features:
+
+- [ ] More loan schemes and banks
+- [ ] Video tutorials for complex topics
+- [ ] Community forum
+- [ ] Personalized recommendations
+- [ ] Push notifications for scholarship deadlines
+- [ ] Integration with government portals
+- [ ] Offline voice support
+
+## Contributing
+
+This is a hackathon project demonstrating AI-powered youth empowerment. Contributions welcome!
 
 ## License
 
-This example app follows the license of the RunAnywhere SDK.
+This app uses the RunAnywhere SDK. All knowledge base information is curated from public government
+sources and is for informational purposes only. Always verify with official sources.
+
+## Disclaimer
+
+YouthHub provides general information and guidance. For legal matters, always consult a qualified
+lawyer. For financial decisions, verify current interest rates and terms with banks. For education,
+check with institutions directly.
+
+## Acknowledgments
+
+- **RunAnywhere SDK** for on-device AI capabilities
+- **Government of India** for public information on schemes
+- **Open Source Community** for amazing libraries
+- **Indian Youth** - this app is built for you!
+
+---
+**Made with ❤️ for Indian Youth**
+
+*Empowering the next generation with knowledge, one query at a time.*
