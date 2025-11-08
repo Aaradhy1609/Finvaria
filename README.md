@@ -227,6 +227,6 @@ check with institutions directly.
 - **Indian Youth** - this app is built for you!
 
 ---
-**Made with ❤️ for Indian Youth**
+**Made with ❤️ for Indian Youth by Aaradhy Sharma , Harshit Sharma , Anika , Aryan**
 
 *Empowering the next generation with knowledge, one query at a time.*
