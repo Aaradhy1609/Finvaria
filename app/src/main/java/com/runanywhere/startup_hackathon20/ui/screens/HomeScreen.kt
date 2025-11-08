@@ -285,6 +285,24 @@ fun CategorySelector(
                 modifier = Modifier.weight(1f)
             )
         }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            QuickActionButton(
+                text = "Education Guide",
+                icon = Icons.Default.School,
+                onClick = { navController.navigate("education") },
+                modifier = Modifier.weight(1f)
+            )
+            QuickActionButton(
+                text = "Settings",
+                icon = Icons.Default.Settings,
+                onClick = { navController.navigate("settings") },
+                modifier = Modifier.weight(1f)
+            )
+        }
     }
 }
 

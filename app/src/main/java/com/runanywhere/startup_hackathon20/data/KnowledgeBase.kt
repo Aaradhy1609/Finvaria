@@ -33,7 +33,8 @@ object KnowledgeBase {
             ),
             description = "Comprehensive education loan for studies in India and abroad",
             applicationProcess = "Visit SBI branch or apply online through SBI website",
-            rating = 4.5f
+            rating = 4.5f,
+            website = "https://sbi.co.in/web/personal-banking/loans/education-loans/student-loan-scheme"
         ),
         LoanInfo(
             id = "edu_vidya_lakshmi",
@@ -62,7 +63,8 @@ object KnowledgeBase {
             ),
             description = "One-stop portal for education loans from multiple banks",
             applicationProcess = "Register on vidyalakshmi.co.in and apply to multiple banks",
-            rating = 4.2f
+            rating = 4.2f,
+            website = "https://vidyalakshmi.co.in"
         ),
         LoanInfo(
             id = "edu_central_govt",
@@ -90,7 +92,8 @@ object KnowledgeBase {
             ),
             description = "Interest subsidy scheme for economically weaker students",
             applicationProcess = "Apply through National Scholarship Portal",
-            rating = 4.7f
+            rating = 4.7f,
+            website = "https://scholarships.gov.in"
         ),
 
         // Personal Loans
@@ -120,7 +123,8 @@ object KnowledgeBase {
             ),
             description = "Instant personal loan with competitive rates",
             applicationProcess = "Apply online or visit branch",
-            rating = 4.3f
+            rating = 4.3f,
+            website = "https://www.hdfcbank.com/personal/loans/personal-loan"
         ),
 
         // Home Loans
@@ -150,7 +154,8 @@ object KnowledgeBase {
             ),
             description = "Government scheme for affordable housing",
             applicationProcess = "Apply through participating banks and HFCs",
-            rating = 4.6f
+            rating = 4.6f,
+            website = "https://pmaymis.gov.in/"
         ),
 
         // Business Loans
@@ -181,7 +186,8 @@ object KnowledgeBase {
             ),
             description = "Micro-credit scheme for small business enterprises",
             applicationProcess = "Visit nearest bank or apply online through Mudra portal",
-            rating = 4.4f
+            rating = 4.4f,
+            website = "https://www.mudra.org.in/"
         ),
 
         // Vehicle Loans
@@ -212,7 +218,8 @@ object KnowledgeBase {
             ),
             description = "Loan for purchasing two-wheelers and four-wheelers",
             applicationProcess = "Apply through dealer or bank",
-            rating = 4.1f
+            rating = 4.1f,
+            website = "https://www.bankbazaar.com/loan/car-loan.html"
         )
     )
 
@@ -249,7 +256,8 @@ object KnowledgeBase {
                 "Send legal notice before filing complaint",
                 "Document everything with photos/videos",
                 "Consumer courts don't require lawyers"
-            )
+            ),
+            website = "https://consumerhelpline.gov.in/"
         ),
         LegalAdvice(
             id = "legal_employment_001",
@@ -281,10 +289,11 @@ object KnowledgeBase {
             ),
             tips = listOf(
                 "Always get employment terms in writing",
-                "Keep copies of all salary slips and documents",
+                "Keep all salary slips and documents",
                 "Document all verbal conversations via email",
                 "Approach Labour Commissioner first (free of cost)"
-            )
+            ),
+            website = "https://labour.gov.in/"
         ),
         LegalAdvice(
             id = "legal_property_001",
@@ -320,7 +329,8 @@ object KnowledgeBase {
                 "Check for any pending litigations",
                 "Ensure proper registration of documents",
                 "Get legal opinion before purchase"
-            )
+            ),
+            website = "https://indianjudiciary.gov.in/"
         ),
         LegalAdvice(
             id = "legal_education_001",
@@ -355,7 +365,8 @@ object KnowledgeBase {
                 "Send emails for all communication",
                 "Approach UGC for recognized institutions",
                 "File consumer complaint if service deficiency"
-            )
+            ),
+            website = "https://ugc.ac.in/"
         ),
         LegalAdvice(
             id = "legal_cyber_001",
@@ -392,7 +403,8 @@ object KnowledgeBase {
                 "Use cybercrime.gov.in portal for complaints",
                 "Keep evidence - screenshots, emails, messages",
                 "Block cards and change passwords immediately"
-            )
+            ),
+            website = "https://cybercrime.gov.in/"
         )
     )
 
@@ -448,7 +460,8 @@ object KnowledgeBase {
                 "Practice previous year papers",
                 "Consider your branch interest carefully",
                 "Internships are crucial for placements"
-            )
+            ),
+            website = "https://www.jeeadv.ac.in/"
         ),
         EducationGuidance(
             id = "edu_medical",
@@ -498,7 +511,8 @@ object KnowledgeBase {
                 "Focus on NCERT thoroughly",
                 "Solve previous year NEET papers",
                 "Consider alternatives like BDS, BAMS if MBBS is difficult"
-            )
+            ),
+            website = "https://ntaneet.nic.in/"
         ),
         EducationGuidance(
             id = "edu_skill_dev",
@@ -542,7 +556,8 @@ object KnowledgeBase {
                 "Visit www.pmkvyofficial.org for courses",
                 "ITI trades offer good employment",
                 "Consider market demand before choosing course"
-            )
+            ),
+            website = "https://www.pmkvyofficial.org/"
         ),
         EducationGuidance(
             id = "edu_online",
@@ -586,7 +601,8 @@ object KnowledgeBase {
                 "Focus on job-relevant skills",
                 "SWAYAM offers free government-recognized courses",
                 "Combine multiple certificates for better impact"
-            )
+            ),
+            website = "https://swayam.gov.in/"
         )
     )
 

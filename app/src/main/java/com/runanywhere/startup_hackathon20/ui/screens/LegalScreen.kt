@@ -13,11 +13,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.runanywhere.startup_hackathon20.FinvariaViewModel
 import com.runanywhere.startup_hackathon20.data.LegalAdvice
 import com.runanywhere.startup_hackathon20.data.LegalCategory
+import com.runanywhere.startup_hackathon20.openUrl
 import com.runanywhere.startup_hackathon20.ui.components.EmptyState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -393,18 +395,24 @@ fun AnimatedLegalCard(
                         }
                     }
 
+                    val context = LocalContext.current
                     OutlinedButton(
-                        onClick = { /* Contact lawyer */ },
+                        onClick = {
+                            if (advice.website.isNotEmpty()) {
+                                openUrl(context, advice.website)
+                            }
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 16.dp)
+                            .padding(top = 16.dp),
+                        enabled = advice.website.isNotEmpty()
                     ) {
                         Icon(
                             imageVector = Icons.Default.ContactPage,
                             contentDescription = null
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Find a Lawyer")
+                        Text("More Information")
                     }
                 }
             }

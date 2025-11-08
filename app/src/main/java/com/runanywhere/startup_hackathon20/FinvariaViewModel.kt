@@ -92,9 +92,47 @@ class FinvariaViewModel : ViewModel() {
     private fun addWelcomeMessage() {
         val language = _userPreferences.value.language
         val welcomeMessage = when (language) {
-            Language.HINDI -> "नमस्ते! मैं आपका फिनवेरिया सहायक हूं। मैं वित्त, कानूनी और शिक्षा मामलों में मदद कर सकता हूं।"
-            Language.HINGLISH -> "Namaste! Main aapka Finvaria assistant hun. Finance, legal aur education ke mamle me help kar sakta hun."
-            else -> "Welcome to Finvaria! I'm your AI assistant for finance, legal, and education guidance. How can I help you today?"
+            Language.HINDI -> """नमस्ते! मैं फिनवेरिया हूं, आपका AI सहायक। 🎯
+
+मैं आपकी मदद कर सकता हूं:
+• 💰 शिक्षा ऋण, व्यक्तिगत ऋण, सरकारी योजनाएं
+• ⚖️ उपभोक्ता अधिकार, रोजगार कानून, साइबर अपराध
+• 📚 पाठ्यक्रम चयन, प्रवेश परीक्षा, छात्रवृत्ति
+
+कुछ पूछें जैसे:
+- "शिक्षा ऋण के लिए कौन सी योजनाएं हैं?"
+- "मेरा वेतन नहीं मिला, मैं क्या करूं?"
+- "JEE की तैयारी कैसे करें?"
+
+बस अपना सवाल टाइप करें! 😊"""
+
+            Language.HINGLISH -> """Namaste! Main Finvaria hun, aapka AI assistant। 🎯
+
+Main aapki madad kar sakta hun:
+• 💰 Education loans, personal loans, government schemes
+• ⚖️ Consumer rights, employment law, cyber crime
+• 📚 Course selection, entrance exams, scholarships
+
+Kuch poochiye jaise:
+- "Education loan ke liye kaun si schemes hain?"
+- "Mera salary nahi mila, main kya karun?"
+- "JEE ki taiyaari kaise karein?"
+
+Bas apna question type karein! 😊"""
+
+            else -> """Welcome to Finvaria! I'm your AI assistant for youth empowerment. 🎯
+
+I can help you with:
+• 💰 Education loans, personal loans, government schemes
+• ⚖️ Consumer rights, employment law, cyber crime
+• 📚 Course selection, entrance exams, scholarships
+
+Try asking:
+- "What education loans are available for engineering?"
+- "My employer hasn't paid my salary, what should I do?"
+- "How do I prepare for NEET exam?"
+
+Just type your question below! 😊"""
         }
 
         _messages.value = listOf(
@@ -254,57 +292,92 @@ class FinvariaViewModel : ViewModel() {
     private fun buildContextPrompt(userQuery: String, category: Category): String {
         val language = _userPreferences.value.language
         val languageInstruction = when (language) {
-            Language.HINDI -> "Please respond in Hindi (हिन्दी)."
-            Language.HINGLISH -> "Please respond in Hinglish (Roman Hindi with English words)."
-            else -> "Please respond in simple English."
+            Language.HINDI -> "कृपया हिन्दी में जवाब दें।"
+            Language.HINGLISH -> "Please reply in Hinglish (Roman Hindi with English words)."
+            else -> ""
         }
+
+        // Get relevant context from knowledge base
+        val contextInfo = buildRelevantContext(userQuery, category)
 
         val categoryContext = when (category) {
-            Category.FINANCE -> """
-                You are a financial advisor helping Indian youth with:
-                - Education loans and student loans
-                - Personal finance management
-                - Government loan schemes
-                - Scholarships and financial aid
-                - Basic investment advice
-                Provide practical, actionable advice specific to India.
-            """.trimIndent()
+            Category.FINANCE -> """You are an expert financial advisor specializing in Indian banking, loans, and government schemes. You have deep knowledge of education loans, personal finance, government schemes like PMAY and Mudra Yojana, and financial planning for young Indians."""
 
-            Category.LEGAL -> """
-                You are a legal advisor helping Indian youth with:
-                - Consumer rights and protection
-                - Employment law basics
-                - Education-related legal issues
-                - Cyber crime and online fraud
-                - Basic legal procedures in India
-                Provide simple, easy-to-understand legal guidance. Always recommend consulting a lawyer for complex issues.
-            """.trimIndent()
+            Category.LEGAL -> """You are a knowledgeable legal advisor with expertise in Indian law, particularly consumer rights, employment law, cyber crime, and legal procedures. You provide clear, practical legal guidance while emphasizing when professional legal consultation is necessary."""
 
-            Category.EDUCATION -> """
-                You are an education counselor helping Indian youth with:
-                - Course selection and career guidance
-                - Entrance exams and preparation
-                - Scholarships and financial aid
-                - Study abroad options
-                - Skill development programs
-                Provide motivating and practical advice.
-            """.trimIndent()
+            Category.EDUCATION -> """You are an experienced education counselor and career advisor with comprehensive knowledge of Indian education systems, entrance exams, scholarships, career paths, and skill development programs. You inspire and guide students towards making informed decisions."""
 
-            else -> """
-                You are Finvaria assistant helping Indian youth with finance, legal, and education matters.
-                Provide helpful, accurate, and practical advice.
-            """.trimIndent()
+            else -> """You are Finvaria, an intelligent assistant helping Indian youth navigate finance, legal matters, and education. You provide accurate, practical, and empowering guidance."""
         }
 
-        return """
-            $categoryContext
-            
-            $languageInstruction
-            
-            User Question: $userQuery
-            
-            Provide a helpful, concise, and actionable response.
-        """.trimIndent()
+        return """$categoryContext
+
+${if (languageInstruction.isNotEmpty()) "$languageInstruction\n" else ""}
+$contextInfo
+
+User: $userQuery
+
+Provide a natural, conversational, and helpful response. Be specific and actionable. If you reference schemes, loans, or programs, mention actual names and key details. Keep your response concise but comprehensive.""".trimIndent()
+    }
+
+    private fun buildRelevantContext(query: String, category: Category): String {
+        val lowerQuery = query.lowercase()
+        val contextParts = mutableListOf<String>()
+
+        when (category) {
+            Category.FINANCE -> {
+                val relevantLoans = KnowledgeBase.searchLoans(lowerQuery).take(2)
+                if (relevantLoans.isNotEmpty()) {
+                    val loanInfo = relevantLoans.joinToString("\n") { loan ->
+                        "- ${loan.name} by ${loan.provider}: ${loan.interestRate} interest, ${loan.minAmount}-${loan.maxAmount}, ${loan.tenure} tenure"
+                    }
+                    contextParts.add("Relevant loan schemes:\n$loanInfo")
+                }
+            }
+
+            Category.LEGAL -> {
+                val relevantAdvice = KnowledgeBase.searchLegalAdvice(lowerQuery).take(2)
+                if (relevantAdvice.isNotEmpty()) {
+                    val adviceInfo = relevantAdvice.joinToString("\n") { advice ->
+                        "- ${advice.title}: ${advice.solution.take(150)}..."
+                    }
+                    contextParts.add("Relevant legal guidance:\n$adviceInfo")
+                }
+            }
+
+            Category.EDUCATION -> {
+                val relevantEdu = KnowledgeBase.searchEducation(lowerQuery).take(2)
+                if (relevantEdu.isNotEmpty()) {
+                    val eduInfo = relevantEdu.joinToString("\n") { edu ->
+                        "- ${edu.title}: ${edu.description}"
+                    }
+                    contextParts.add("Relevant education paths:\n$eduInfo")
+                }
+            }
+
+            else -> {
+                // Search all categories
+                val loans = KnowledgeBase.searchLoans(lowerQuery).take(1)
+                val legal = KnowledgeBase.searchLegalAdvice(lowerQuery).take(1)
+                val edu = KnowledgeBase.searchEducation(lowerQuery).take(1)
+
+                if (loans.isNotEmpty()) {
+                    contextParts.add("Finance: ${loans[0].name} - ${loans[0].description}")
+                }
+                if (legal.isNotEmpty()) {
+                    contextParts.add("Legal: ${legal[0].title} - ${legal[0].description}")
+                }
+                if (edu.isNotEmpty()) {
+                    contextParts.add("Education: ${edu[0].title} - ${edu[0].description}")
+                }
+            }
+        }
+
+        return if (contextParts.isNotEmpty()) {
+            "Context from knowledge base:\n${contextParts.joinToString("\n\n")}"
+        } else {
+            ""
+        }
     }
 
     private fun searchKnowledgeBase(query: String, category: Category): String {
@@ -321,78 +394,117 @@ class FinvariaViewModel : ViewModel() {
     private fun searchLoansKnowledgeBase(query: String): String {
         val results = KnowledgeBase.searchLoans(query)
         if (results.isEmpty()) {
-            return "I couldn't find specific loan information for your query. Try browsing the Loan Advisor section or be more specific about the type of loan you need."
+            return "I couldn't find specific loan schemes matching your query. Could you be more specific? For example, are you looking for education loans, personal loans, home loans, or business loans? Feel free to browse the Loan Advisor section to see all available options!"
         }
 
         val topResult = results.first()
-        return """
-            **${topResult.name}**
-            
-            ${topResult.description}
-            
-            **Provider:** ${topResult.provider}
-            **Interest Rate:** ${topResult.interestRate}
-            **Loan Amount:** ${topResult.minAmount} - ${topResult.maxAmount}
-            **Tenure:** ${topResult.tenure}
-            
-            **Eligibility:** ${topResult.eligibility}
-            
-            **Key Benefits:**
-            ${topResult.benefits.take(3).joinToString("\n") { "• $it" }}
-            
-            View the Loan Advisor section for complete details and application process.
-        """.trimIndent()
+        return """Based on your query, I found this relevant loan scheme:
+
+**${topResult.name}** by ${topResult.provider}
+
+${topResult.description}
+
+**Key Details:**
+• Interest Rate: ${topResult.interestRate}
+• Loan Amount: ${topResult.minAmount} to ${topResult.maxAmount}
+• Repayment Period: ${topResult.tenure}
+• Processing Time: ${topResult.processingTime}
+
+**Eligibility:** ${topResult.eligibility}
+
+**Top Benefits:**
+${topResult.benefits.take(3).joinToString("\n") { "✓ $it" }}
+
+${if (topResult.website.isNotEmpty()) "\nYou can learn more and apply at: ${topResult.website}\n" else ""}
+Would you like to know more about the application process or explore other loan options?""".trimIndent()
     }
 
     private fun searchLegalKnowledgeBase(query: String): String {
         val results = KnowledgeBase.searchLegalAdvice(query)
         if (results.isEmpty()) {
-            return "I couldn't find specific legal advice for your query. Try browsing the Legal Advice section or consult with a legal professional."
+            return """I couldn't find specific legal guidance for your query, but I'm here to help! 
+
+You can try:
+• Being more specific about your legal issue
+• Browsing the Legal Advice section for common scenarios
+• Consulting with a qualified lawyer for personalized advice
+
+Common topics I can help with:
+- Consumer rights and defective products
+- Employment issues and salary disputes
+- Cyber crime and online fraud
+- Property matters
+- Education-related disputes"""
         }
 
         val topResult = results.first()
-        return """
-            **${topResult.title}**
-            
-            ${topResult.description}
-            
-            **Solution:**
-            ${topResult.solution}
-            
-            **Key Tips:**
-            ${topResult.tips.take(3).joinToString("\n") { "• $it" }}
-            
-            **Relevant Laws:**
-            ${topResult.relevantLaws.take(2).joinToString("\n") { "• $it" }}
-            
-            View the Legal Advice section for detailed information. For serious matters, please consult a lawyer.
-        """.trimIndent()
+        return """I found relevant legal guidance for your situation:
+
+**${topResult.title}**
+
+**What's happening:** ${topResult.scenario}
+
+**What you can do:** ${topResult.solution}
+
+**Important to know:**
+• Timeline: ${topResult.timelineExpectation}
+• Estimated Cost: ${topResult.estimatedCost}
+
+**Key Tips:**
+${topResult.tips.take(3).joinToString("\n") { "✓ $it" }}
+
+**Relevant Laws:**
+${topResult.relevantLaws.take(2).joinToString("\n") { "• $it" }}
+
+${if (topResult.website.isNotEmpty()) "\nFor more information, visit: ${topResult.website}\n" else ""}
+⚠️ **Remember:** This is general guidance. For serious legal matters, please consult a qualified lawyer.
+
+Need more details about the documents required or next steps?""".trimIndent()
     }
 
     private fun searchEducationKnowledgeBase(query: String): String {
         val results = KnowledgeBase.searchEducation(query)
         if (results.isEmpty()) {
-            return "I couldn't find specific education guidance for your query. Try browsing the Education section or be more specific about the course or exam you're interested in."
+            return """I couldn't find specific information about that education path. Let me help you explore! 🎓
+
+Try asking about:
+• Engineering (B.Tech/B.E.) - IIT, NIT, or other colleges
+• Medical (MBBS, BDS) - NEET preparation
+• Skill Development programs
+• Online courses and certifications
+• Scholarships and financial aid
+
+Or browse the Education section to see all available paths and career options!"""
         }
 
         val topResult = results.first()
-        return """
-            **${topResult.title}**
-            
-            ${topResult.description}
-            
-            **Eligibility:** ${topResult.eligibility}
-            **Duration:** ${topResult.duration}
-            **Average Cost:** ${topResult.averageCost}
-            
-            **Career Prospects:**
-            ${topResult.careerProspects.take(3).joinToString("\n") { "• $it" }}
-            
-            **Top Entrance Exams:**
-            ${topResult.entranceExams.take(3).joinToString("\n") { "• $it" }}
-            
-            View the Education section for complete guidance and scholarship information.
-        """.trimIndent()
+        return """Great question! Here's what you need to know about **${topResult.title}**:
+
+**Overview:** ${topResult.description}
+
+**Quick Facts:**
+• Duration: ${topResult.duration}
+• Average Cost: ${topResult.averageCost}
+• Eligibility: ${topResult.eligibility}
+
+**Career Opportunities:**
+${topResult.careerProspects.take(3).joinToString("\n") { "💼 $it" }}
+
+**Key Entrance Exams:**
+${topResult.entranceExams.take(3).joinToString("\n") { "📝 $it" }}
+
+**Top Institutions:**
+${topResult.topInstitutions.take(3).joinToString("\n") { "🏛️ $it" }}
+
+${
+            if (topResult.scholarshipsAvailable.isNotEmpty()) "\n**Scholarships Available:**\n${
+                topResult.scholarshipsAvailable.take(
+                    2
+                ).joinToString("\n") { "🎓 $it" }
+            }\n" else ""
+        }
+${if (topResult.website.isNotEmpty()) "\nLearn more at: ${topResult.website}\n" else ""}
+Want to know about entrance exam preparation tips or scholarship applications?""".trimIndent()
     }
 
     private fun searchAllKnowledgeBase(query: String): String {
@@ -404,29 +516,24 @@ class FinvariaViewModel : ViewModel() {
             loanResults.isNotEmpty() || legalResults.isNotEmpty() || eduResults.isNotEmpty()
 
         if (!hasResults) {
-            return """
-                I can help you with:
-                
-                **💰 Finance & Loans**
-                • Education loans
-                • Personal loans
-                • Government schemes (PMAY, Mudra)
-                • Scholarships
-                
-                **⚖️ Legal Advice**
-                • Consumer rights
-                • Employment law
-                • Cyber crime
-                • Education disputes
-                
-                **📚 Education**
-                • Course selection
-                • Entrance exams
-                • Career guidance
-                • Skill development
-                
-                Please ask a specific question or browse the sections above!
-            """.trimIndent()
+            return """Hi! I'm here to help you with finance, legal matters, and education guidance. 😊
+
+**💰 Finance & Loans:**
+Ask about education loans, personal loans, government schemes like PMAY or Mudra Yojana, or scholarships.
+
+**⚖️ Legal Advice:**
+Get guidance on consumer rights, employment law, cyber crime, property matters, or education disputes.
+
+**📚 Education:**
+Explore courses, entrance exams (JEE, NEET), career guidance, scholarships, or skill development programs.
+
+**Try asking questions like:**
+• "What are the best education loans for engineering?"
+• "My online order is defective, what are my rights?"
+• "How do I prepare for JEE Main?"
+• "What scholarships are available for undergraduate students?"
+
+Go ahead, ask me anything! 🚀"""
         }
 
         // Return first relevant result from any category

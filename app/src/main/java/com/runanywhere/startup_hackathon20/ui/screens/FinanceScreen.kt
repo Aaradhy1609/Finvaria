@@ -13,11 +13,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.runanywhere.startup_hackathon20.FinvariaViewModel
 import com.runanywhere.startup_hackathon20.data.LoanInfo
 import com.runanywhere.startup_hackathon20.data.LoanType
+import com.runanywhere.startup_hackathon20.openUrl
 import com.runanywhere.startup_hackathon20.ui.components.EmptyState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -119,7 +121,8 @@ fun FinanceScreen(viewModel: FinvariaViewModel) {
                             isExpanded = expandedLoanId == loan.id,
                             onExpandClick = {
                                 expandedLoanId = if (expandedLoanId == loan.id) null else loan.id
-                            }
+                            },
+                            context = LocalContext.current
                         )
                     }
                 }
@@ -204,7 +207,8 @@ fun LoanFilterCard(
 fun AnimatedLoanCard(
     loan: LoanInfo,
     isExpanded: Boolean,
-    onExpandClick: () -> Unit
+    onExpandClick: () -> Unit,
+    context: android.content.Context
 ) {
     var visible by remember { mutableStateOf(false) }
 
@@ -371,10 +375,15 @@ fun AnimatedLoanCard(
                     }
 
                     Button(
-                        onClick = { /* Open application process */ },
+                        onClick = {
+                            if (loan.website.isNotEmpty()) {
+                                openUrl(context, loan.website)
+                            }
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 16.dp)
+                            .padding(top = 16.dp),
+                        enabled = loan.website.isNotEmpty()
                     ) {
                         Icon(
                             imageVector = Icons.Default.OpenInNew,

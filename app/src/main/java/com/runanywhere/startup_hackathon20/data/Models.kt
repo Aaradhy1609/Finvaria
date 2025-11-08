@@ -60,7 +60,8 @@ data class LoanInfo(
     val benefits: List<String>,
     val description: String,
     val applicationProcess: String,
-    val rating: Float = 0f
+    val rating: Float = 0f,
+    val website: String = ""
 )
 
 // Legal Advisory Categories
@@ -90,7 +91,8 @@ data class LegalAdvice(
     val timelineExpectation: String,
     val estimatedCost: String,
     val commonMistakes: List<String>,
-    val tips: List<String>
+    val tips: List<String>,
+    val website: String = ""
 )
 
 // Education Types
@@ -121,7 +123,8 @@ data class EducationGuidance(
     val requiredSkills: List<String>,
     val entranceExams: List<String>,
     val recommendedFor: String,
-    val tips: List<String>
+    val tips: List<String>,
+    val website: String = ""
 )
 
 // Scholarship Data

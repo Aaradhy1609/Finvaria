@@ -12,12 +12,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.runanywhere.startup_hackathon20.FinvariaViewModel
 import com.runanywhere.startup_hackathon20.data.EducationGuidance
 import com.runanywhere.startup_hackathon20.data.EducationType
 import com.runanywhere.startup_hackathon20.data.Scholarship
+import com.runanywhere.startup_hackathon20.openUrl
 import com.runanywhere.startup_hackathon20.ui.components.EmptyState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -282,6 +284,7 @@ fun AnimatedEducationCard(
     onExpandClick: () -> Unit
 ) {
     var visible by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         visible = true
@@ -424,6 +427,21 @@ fun AnimatedEducationCard(
                             )
                         }
                     }
+
+                    if (education.website.isNotEmpty()) {
+                        Button(
+                            onClick = {
+                                openUrl(context, education.website)
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp)
+                        ) {
+                            Icon(Icons.Default.OpenInNew, null)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Learn More")
+                        }
+                    }
                 }
             }
         }
@@ -438,6 +456,7 @@ fun AnimatedScholarshipCard(
     onExpandClick: () -> Unit
 ) {
     var visible by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         visible = true
@@ -536,7 +555,9 @@ fun AnimatedScholarshipCard(
                     }
 
                     Button(
-                        onClick = { /* Open website */ },
+                        onClick = {
+                            openUrl(context, scholarship.website)
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 16.dp)
