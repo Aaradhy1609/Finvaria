@@ -5,9 +5,17 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+configurations.all {
+    exclude(group = "com.android.support", module = "support-compat")
+    exclude(group = "com.android.support", module = "support-core-utils")
+    exclude(group = "com.android.support", module = "support-core-ui")
+    exclude(group = "com.android.support", module = "support-fragment")
+}
+
 android {
     namespace = "com.runanywhere.startup_hackathon20"
     compileSdk = 36
+    buildToolsVersion = "35.0.0"
 
     defaultConfig {
         applicationId = "com.runanywhere.startup_hackathon20"
@@ -34,6 +42,19 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/license.txt"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/NOTICE.txt"
+            excludes += "META-INF/notice.txt"
+            excludes += "META-INF/*.kotlin_module"
+        }
     }
     buildFeatures {
         compose = true

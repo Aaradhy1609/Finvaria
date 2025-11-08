@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.runanywhere.startup_hackathon20.YouthHubViewModel
+import com.runanywhere.startup_hackathon20.FinvariaViewModel
 import com.runanywhere.startup_hackathon20.data.EducationGuidance
 import com.runanywhere.startup_hackathon20.data.EducationType
 import com.runanywhere.startup_hackathon20.data.Scholarship
@@ -22,7 +22,7 @@ import com.runanywhere.startup_hackathon20.ui.components.EmptyState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EducationScreen(viewModel: YouthHubViewModel) {
+fun EducationScreen(viewModel: FinvariaViewModel) {
     val filteredEducation by viewModel.filteredEducation.collectAsState()
     val scholarships by viewModel.scholarships.collectAsState()
     val educationFilter by viewModel.educationFilter.collectAsState()

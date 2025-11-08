@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.runanywhere.startup_hackathon20.YouthHubViewModel
+import com.runanywhere.startup_hackathon20.FinvariaViewModel
 
 @Composable
 fun AnimatedGradientBackground(
@@ -84,7 +84,7 @@ fun PulsingButton(
 }
 
 @Composable
-fun ModelManagementCard(viewModel: YouthHubViewModel) {
+fun ModelManagementCard(viewModel: FinvariaViewModel) {
     val availableModels by viewModel.availableModels.collectAsState()
     val currentModelId by viewModel.currentModelId.collectAsState()
     val downloadProgress by viewModel.downloadProgress.collectAsState()

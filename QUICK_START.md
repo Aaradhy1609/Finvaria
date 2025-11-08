@@ -1,4 +1,4 @@
-# YouthHub - Quick Start Guide
+# Finvaria - Quick Start Guide
 
 ## 🚀 Get Your App Running in 5 Minutes!
 
@@ -28,7 +28,7 @@
 ### Step 4: First Launch
 
 1. App opens to beautiful **Home screen** 🎉
-2. See welcome message: "Welcome to YouthHub! 🎉"
+2. See welcome message: "Welcome to Finvaria! 🎉"
 3. Four category chips appear: Finance, Legal, Education, All
 
 ### Step 5: Download AI Model (Optional but Recommended)

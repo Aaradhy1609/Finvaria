@@ -1,11 +1,11 @@
-# YouthHub - Youth Empowerment Platform
+# Finvaria - Youth Empowerment Platform
 
 A comprehensive Android app empowering Indian youth with AI-powered guidance on finance, legal
 matters, and education - completely offline capable!
 
 ## What This App Offers
 
-YouthHub is your all-in-one companion for navigating the critical decisions of youth:
+Finvaria is your all-in-one companion for navigating the critical decisions of youth:
 
 ### Finance & Loan Guidance
 
@@ -215,7 +215,7 @@ sources and is for informational purposes only. Always verify with official sour
 
 ## Disclaimer
 
-YouthHub provides general information and guidance. For legal matters, always consult a qualified
+Finvaria provides general information and guidance. For legal matters, always consult a qualified
 lawyer. For financial decisions, verify current interest rates and terms with banks. For education,
 check with institutions directly.
 

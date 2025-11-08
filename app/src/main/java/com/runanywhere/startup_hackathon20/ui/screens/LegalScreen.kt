@@ -15,14 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.runanywhere.startup_hackathon20.YouthHubViewModel
+import com.runanywhere.startup_hackathon20.FinvariaViewModel
 import com.runanywhere.startup_hackathon20.data.LegalAdvice
 import com.runanywhere.startup_hackathon20.data.LegalCategory
 import com.runanywhere.startup_hackathon20.ui.components.EmptyState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LegalScreen(viewModel: YouthHubViewModel) {
+fun LegalScreen(viewModel: FinvariaViewModel) {
     val filteredAdvice by viewModel.filteredLegalAdvice.collectAsState()
     val legalFilter by viewModel.legalFilter.collectAsState()
 

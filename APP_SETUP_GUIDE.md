@@ -1,8 +1,8 @@
-# YouthHub - Complete Setup & Feature Guide
+# Finvaria - Complete Setup & Feature Guide
 
 ## 🎉 Your App is Ready!
 
-Your YouthHub app has been completely transformed with a beautiful, functional UI filled with
+Your Finvaria app has been completely transformed with a beautiful, functional UI filled with
 animations and full offline capability!
 
 ## ✨ What's Been Implemented
@@ -270,13 +270,13 @@ Build -> Rebuild Project
 - Allocate at least 2GB RAM to emulator
 - Enable hardware acceleration if available
 
-## 📊 Technical Architecture
+## Technical Architecture
 
 ```
-YouthHub App Architecture
+Finvaria App Architecture
 ├── MainActivity - Entry point with theme management
 ├── Navigation - Bottom nav with 5 screens
-├── YouthHubViewModel - Central state management
+├── FinvariaViewModel - Central state management
 │   ├── AI Model Management
 │   ├── Chat & Messages
 │   ├── Knowledge Base Queries
@@ -346,7 +346,7 @@ YouthHub App Architecture
 
 ## 🎊 Congratulations!
 
-Your YouthHub app is now fully functional with:
+Your Finvaria app is now fully functional with:
 
 - ✅ Beautiful, animated UI
 - ✅ Complete navigation system

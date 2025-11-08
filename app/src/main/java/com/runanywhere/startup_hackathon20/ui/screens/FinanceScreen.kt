@@ -15,14 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.runanywhere.startup_hackathon20.YouthHubViewModel
+import com.runanywhere.startup_hackathon20.FinvariaViewModel
 import com.runanywhere.startup_hackathon20.data.LoanInfo
 import com.runanywhere.startup_hackathon20.data.LoanType
 import com.runanywhere.startup_hackathon20.ui.components.EmptyState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FinanceScreen(viewModel: YouthHubViewModel) {
+fun FinanceScreen(viewModel: FinvariaViewModel) {
     val filteredLoans by viewModel.filteredLoans.collectAsState()
     val loanFilter by viewModel.loanFilter.collectAsState()
 

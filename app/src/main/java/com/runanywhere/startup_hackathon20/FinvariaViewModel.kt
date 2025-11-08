@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class YouthHubViewModel : ViewModel() {
+class FinvariaViewModel : ViewModel() {
 
     // Chat and AI
     private val _messages = MutableStateFlow<List<ChatMessage>>(emptyList())
@@ -92,9 +92,9 @@ class YouthHubViewModel : ViewModel() {
     private fun addWelcomeMessage() {
         val language = _userPreferences.value.language
         val welcomeMessage = when (language) {
-            Language.HINDI -> "नमस्ते! मैं आपका यूथ हब सहायक हूं। मैं वित्त, कानूनी और शिक्षा मामलों में मदद कर सकता हूं।"
-            Language.HINGLISH -> "Namaste! Main aapka Youth Hub assistant hun. Finance, legal aur education ke mamle me help kar sakta hun."
-            else -> "Welcome to YouthHub! I'm your AI assistant for finance, legal, and education guidance. How can I help you today?"
+            Language.HINDI -> "नमस्ते! मैं आपका फिनवेरिया सहायक हूं। मैं वित्त, कानूनी और शिक्षा मामलों में मदद कर सकता हूं।"
+            Language.HINGLISH -> "Namaste! Main aapka Finvaria assistant hun. Finance, legal aur education ke mamle me help kar sakta hun."
+            else -> "Welcome to Finvaria! I'm your AI assistant for finance, legal, and education guidance. How can I help you today?"
         }
 
         _messages.value = listOf(
@@ -291,7 +291,7 @@ class YouthHubViewModel : ViewModel() {
             """.trimIndent()
 
             else -> """
-                You are YouthHub assistant helping Indian youth with finance, legal, and education matters.
+                You are Finvaria assistant helping Indian youth with finance, legal, and education matters.
                 Provide helpful, accurate, and practical advice.
             """.trimIndent()
         }

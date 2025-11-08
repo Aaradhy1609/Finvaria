@@ -19,10 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.runanywhere.startup_hackathon20.YouthHubViewModel
+import com.runanywhere.startup_hackathon20.FinvariaViewModel
 import com.runanywhere.startup_hackathon20.data.Category
 import com.runanywhere.startup_hackathon20.data.ChatMessage
 import com.runanywhere.startup_hackathon20.ui.components.AnimatedGradientBackground
@@ -32,7 +33,7 @@ import com.runanywhere.startup_hackathon20.ui.components.PulsingButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    viewModel: YouthHubViewModel,
+    viewModel: FinvariaViewModel,
     navController: NavController
 ) {
     val messages by viewModel.messages.collectAsState()
@@ -67,7 +68,7 @@ fun HomeScreen(
                             tint = MaterialTheme.colorScheme.primary
                         )
                         Text(
-                            "YouthHub AI",
+                            "Finvaria AI",
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold
                         )
@@ -208,7 +209,7 @@ fun CategorySelector(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "Welcome to YouthHub! 🎉",
+            text = "Welcome to Finvaria! 🎉",
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold
         )
@@ -544,7 +545,6 @@ fun ChatInputSection(
                             }
                         ) 
                     },
-                    enabled = enabled,
                     shape = RoundedCornerShape(24.dp),
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
@@ -554,9 +554,16 @@ fun ChatInputSection(
                 )
 
                 FloatingActionButton(
-                    onClick = onSendClick,
-                    enabled = enabled && inputText.isNotBlank(),
-                    modifier = Modifier.size(56.dp)
+                    onClick = {
+                        if (enabled && inputText.isNotBlank()) {
+                            onSendClick()
+                        }
+                    },
+                    modifier = Modifier.size(56.dp),
+                    containerColor = if (enabled && inputText.isNotBlank())
+                        MaterialTheme.colorScheme.primaryContainer
+                    else
+                        MaterialTheme.colorScheme.surfaceVariant
                 ) {
                     Icon(
                         imageVector = Icons.Default.Send,

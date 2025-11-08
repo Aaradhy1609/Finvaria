@@ -14,13 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.runanywhere.startup_hackathon20.YouthHubViewModel
+import com.runanywhere.startup_hackathon20.FinvariaViewModel
 import com.runanywhere.startup_hackathon20.data.Language
 import com.runanywhere.startup_hackathon20.data.ThemePreference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(viewModel: YouthHubViewModel) {
+fun SettingsScreen(viewModel: FinvariaViewModel) {
     val userPreferences by viewModel.userPreferences.collectAsState()
     val availableModels by viewModel.availableModels.collectAsState()
     val currentModelId by viewModel.currentModelId.collectAsState()
@@ -206,7 +206,7 @@ fun SettingsScreen(viewModel: YouthHubViewModel) {
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            text = "YouthHub",
+                            text = "Finvaria",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold
                         )

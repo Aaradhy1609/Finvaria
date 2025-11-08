@@ -106,3 +106,7 @@ Thumbs.db
 
 # Claude Code settings (if you want to keep local settings private)
 .claude/settings.local.json
+
+# Temp directories (extracted AAR contents)
+**/libs/temp/
+**/libs/*/temp/

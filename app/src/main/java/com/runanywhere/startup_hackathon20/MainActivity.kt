@@ -12,6 +12,8 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -27,7 +29,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val viewModel: YouthHubViewModel = viewModel()
+            val viewModel: FinvariaViewModel = viewModel()
             val preferences by viewModel.userPreferences.collectAsState()
             
             Startup_hackathon20Theme(
@@ -39,7 +41,7 @@ class MainActivity : ComponentActivity() {
                     else -> AppTheme.BLUE
                 }
             ) {
-                YouthHubApp(viewModel = viewModel)
+                FinvariaApp(viewModel = viewModel)
             }
         }
     }
@@ -55,7 +57,7 @@ sealed class Screen(val route: String, val title: String, val icon: androidx.com
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun YouthHubApp(viewModel: YouthHubViewModel) {
+fun FinvariaApp(viewModel: FinvariaViewModel) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -177,6 +179,9 @@ fun AnimatedIcon(
     Icon(
         imageVector = icon,
         contentDescription = null,
-        modifier = Modifier.scale(scale)
+        modifier = Modifier.graphicsLayer {
+            scaleX = scale
+            scaleY = scale
+        }
     )
 }

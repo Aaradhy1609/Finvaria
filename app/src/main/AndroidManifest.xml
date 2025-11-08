@@ -32,7 +32,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Startup_hackathon20">
+        android:theme="@style/Theme.Startup_hackathon20"
+        tools:replace="android:appComponentFactory"
+        android:appComponentFactory="androidx.core.app.CoreComponentFactory">
         <activity
             android:name=".MainActivity"
             android:exported="true"
