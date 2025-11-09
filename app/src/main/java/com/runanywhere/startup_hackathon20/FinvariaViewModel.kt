@@ -230,7 +230,7 @@ Just type your question below! 😊"""
             _isLoading.value = true
 
             try {
-                // Build context-aware prompt
+                // Build context-aware prompt with conversation history
                 val contextPrompt = buildContextPrompt(text, category)
 
                 var assistantResponse = ""
@@ -297,27 +297,62 @@ Just type your question below! 😊"""
             else -> ""
         }
 
+        // Analyze the query intent
+        val queryIntent = analyzeQueryIntent(userQuery, category)
+        
         // Get relevant context from knowledge base
         val contextInfo = buildRelevantContext(userQuery, category)
+        
+        // Get conversation history for context
+        val conversationHistory = getRecentConversationHistory()
 
-        val categoryContext = when (category) {
-            Category.FINANCE -> """You are an expert financial advisor specializing in Indian banking, loans, and government schemes. You have deep knowledge of education loans, personal finance, government schemes like PMAY and Mudra Yojana, and financial planning for young Indians."""
+        // Build dynamic system prompt based on query intent
+        val systemPrompt = buildSystemPrompt(category, queryIntent)
+        
+        // Build specific instructions based on intent
+        val responseInstructions = buildResponseInstructions(queryIntent, userQuery)
 
-            Category.LEGAL -> """You are a knowledgeable legal advisor with expertise in Indian law, particularly consumer rights, employment law, cyber crime, and legal procedures. You provide clear, practical legal guidance while emphasizing when professional legal consultation is necessary."""
+        // Assemble the final prompt
+        val promptParts = mutableListOf<String>()
 
-            Category.EDUCATION -> """You are an experienced education counselor and career advisor with comprehensive knowledge of Indian education systems, entrance exams, scholarships, career paths, and skill development programs. You inspire and guide students towards making informed decisions."""
+        // System role
+        promptParts.add("ROLE: $systemPrompt")
 
-            else -> """You are Finvaria, an intelligent assistant helping Indian youth navigate finance, legal matters, and education. You provide accurate, practical, and empowering guidance."""
+        // Language instruction
+        if (languageInstruction.isNotEmpty()) {
+            promptParts.add("\nLANGUAGE: $languageInstruction")
         }
 
-        return """$categoryContext
+        // Conversation history
+        if (conversationHistory.isNotEmpty()) {
+            promptParts.add("\nCONVERSATION HISTORY:\n$conversationHistory")
+        }
 
-${if (languageInstruction.isNotEmpty()) "$languageInstruction\n" else ""}
-$contextInfo
+        // Knowledge base context
+        promptParts.add("\n$contextInfo")
 
-User: $userQuery
+        // Response instructions
+        promptParts.add("\n$responseInstructions")
 
-Provide a natural, conversational, and helpful response. Be specific and actionable. If you reference schemes, loans, or programs, mention actual names and key details. Keep your response concise but comprehensive.""".trimIndent()
+        // User query
+        promptParts.add("\nUSER QUESTION: $userQuery")
+
+        // Final instructions
+        promptParts.add(
+            """
+
+IMPORTANT GUIDELINES:
+- Answer the user's question directly and specifically
+- Use actual names, numbers, and details from the knowledge base
+- Keep your response concise yet comprehensive (aim for 150-300 words)
+- Be conversational and encouraging
+- If you mention schemes/programs, include key details like amounts, eligibility, timelines
+- End with a helpful follow-up question or offer to help further
+
+Now provide your response:""".trimIndent()
+        )
+
+        return promptParts.joinToString("\n")
     }
 
     private fun buildRelevantContext(query: String, category: Category): String {
@@ -326,57 +361,107 @@ Provide a natural, conversational, and helpful response. Be specific and actiona
 
         when (category) {
             Category.FINANCE -> {
-                val relevantLoans = KnowledgeBase.searchLoans(lowerQuery).take(2)
+                val relevantLoans = KnowledgeBase.searchLoans(lowerQuery).take(3)
                 if (relevantLoans.isNotEmpty()) {
-                    val loanInfo = relevantLoans.joinToString("\n") { loan ->
-                        "- ${loan.name} by ${loan.provider}: ${loan.interestRate} interest, ${loan.minAmount}-${loan.maxAmount}, ${loan.tenure} tenure"
+                    contextParts.add("=== Relevant Loan Schemes ===")
+                    relevantLoans.forEachIndexed { index, loan ->
+                        contextParts.add("""
+${index + 1}. ${loan.name} (${loan.provider})
+   - Type: ${loan.type.name.replace("_", " ")}
+   - Interest: ${loan.interestRate}
+   - Amount: ${loan.minAmount} - ${loan.maxAmount}
+   - Tenure: ${loan.tenure}
+   - Eligibility: ${loan.eligibility}
+   - Key Benefit: ${loan.benefits.firstOrNull() ?: loan.description}
+   - Collateral: ${loan.collateral}
+                        """.trimIndent())
                     }
-                    contextParts.add("Relevant loan schemes:\n$loanInfo")
                 }
             }
 
             Category.LEGAL -> {
                 val relevantAdvice = KnowledgeBase.searchLegalAdvice(lowerQuery).take(2)
                 if (relevantAdvice.isNotEmpty()) {
-                    val adviceInfo = relevantAdvice.joinToString("\n") { advice ->
-                        "- ${advice.title}: ${advice.solution.take(150)}..."
+                    contextParts.add("=== Relevant Legal Information ===")
+                    relevantAdvice.forEachIndexed { index, advice ->
+                        contextParts.add("""
+${index + 1}. ${advice.title} (${advice.category.name.replace("_", " ")})
+   - Scenario: ${advice.scenario}
+   - Solution Summary: ${advice.solution.take(200)}${if (advice.solution.length > 200) "..." else ""}
+   - Relevant Laws: ${advice.relevantLaws.take(2).joinToString(", ")}
+   - Timeline: ${advice.timelineExpectation}
+   - Estimated Cost: ${advice.estimatedCost}
+                        """.trimIndent())
                     }
-                    contextParts.add("Relevant legal guidance:\n$adviceInfo")
                 }
             }
 
             Category.EDUCATION -> {
                 val relevantEdu = KnowledgeBase.searchEducation(lowerQuery).take(2)
+                val relevantScholarships = KnowledgeBase.scholarships.filter { scholarship ->
+                    scholarship.name.contains(lowerQuery, ignoreCase = true) ||
+                    scholarship.eligibility.contains(lowerQuery, ignoreCase = true)
+                }.take(2)
+                
                 if (relevantEdu.isNotEmpty()) {
-                    val eduInfo = relevantEdu.joinToString("\n") { edu ->
-                        "- ${edu.title}: ${edu.description}"
+                    contextParts.add("=== Relevant Education Paths ===")
+                    relevantEdu.forEachIndexed { index, edu ->
+                        contextParts.add("""
+${index + 1}. ${edu.title}
+   - Duration: ${edu.duration}
+   - Average Cost: ${edu.averageCost}
+   - Eligibility: ${edu.eligibility}
+   - Top Entrance Exams: ${edu.entranceExams.take(2).joinToString(", ")}
+   - Career Prospects: ${edu.careerProspects.take(2).joinToString(", ")}
+   - Top Institutions: ${edu.topInstitutions.take(3).joinToString(", ")}
+                        """.trimIndent())
                     }
-                    contextParts.add("Relevant education paths:\n$eduInfo")
+                }
+                
+                if (relevantScholarships.isNotEmpty()) {
+                    contextParts.add("\n=== Available Scholarships ===")
+                    relevantScholarships.forEachIndexed { index, scholarship ->
+                        contextParts.add("""
+${index + 1}. ${scholarship.name}
+   - Amount: ${scholarship.amount}
+   - Eligibility: ${scholarship.eligibility}
+   - Deadline: ${scholarship.deadline}
+                        """.trimIndent())
+                    }
                 }
             }
 
             else -> {
-                // Search all categories
-                val loans = KnowledgeBase.searchLoans(lowerQuery).take(1)
+                // Search all categories for general queries
+                val loans = KnowledgeBase.searchLoans(lowerQuery).take(2)
                 val legal = KnowledgeBase.searchLegalAdvice(lowerQuery).take(1)
                 val edu = KnowledgeBase.searchEducation(lowerQuery).take(1)
 
                 if (loans.isNotEmpty()) {
-                    contextParts.add("Finance: ${loans[0].name} - ${loans[0].description}")
+                    contextParts.add("=== Finance Options ===")
+                    loans.forEach { loan ->
+                        contextParts.add("- ${loan.name}: ${loan.interestRate} interest, ${loan.minAmount}-${loan.maxAmount}")
+                    }
                 }
                 if (legal.isNotEmpty()) {
-                    contextParts.add("Legal: ${legal[0].title} - ${legal[0].description}")
+                    contextParts.add("\n=== Legal Guidance ===")
+                    legal.forEach { advice ->
+                        contextParts.add("- ${advice.title}: ${advice.solution.take(150)}...")
+                    }
                 }
                 if (edu.isNotEmpty()) {
-                    contextParts.add("Education: ${edu[0].title} - ${edu[0].description}")
+                    contextParts.add("\n=== Education Info ===")
+                    edu.forEach { education ->
+                        contextParts.add("- ${education.title}: ${education.description}")
+                    }
                 }
             }
         }
 
         return if (contextParts.isNotEmpty()) {
-            "Context from knowledge base:\n${contextParts.joinToString("\n\n")}"
+            "Knowledge Base Information:\n${contextParts.joinToString("\n\n")}"
         } else {
-            ""
+            "No specific matching information found in knowledge base. Use your general knowledge to help the user."
         }
     }
 
@@ -384,9 +469,9 @@ Provide a natural, conversational, and helpful response. Be specific and actiona
         val lowerQuery = query.lowercase()
 
         return when (category) {
-            Category.FINANCE -> searchLoansKnowledgeBase(lowerQuery)
-            Category.LEGAL -> searchLegalKnowledgeBase(lowerQuery)
-            Category.EDUCATION -> searchEducationKnowledgeBase(lowerQuery)
+            Category.FINANCE -> searchLoansKnowledgeBase(query)
+            Category.LEGAL -> searchLegalKnowledgeBase(query)
+            Category.EDUCATION -> searchEducationKnowledgeBase(query)
             else -> searchAllKnowledgeBase(lowerQuery)
         }
     }
@@ -542,6 +627,197 @@ Go ahead, ask me anything! 🚀"""
             legalResults.isNotEmpty() -> searchLegalKnowledgeBase(query)
             eduResults.isNotEmpty() -> searchEducationKnowledgeBase(query)
             else -> "Please try rephrasing your question or browse the specific sections."
+        }
+    }
+
+    private fun getRecentConversationHistory(): String {
+        // Get last 4 messages (excluding welcome message and current query) for context
+        val recentMessages = _messages.value
+            .filter { it.text.length < 500 } // Exclude very long messages
+            .takeLast(5) // Get last 5 messages
+            .dropLast(1) // Exclude the current user message that was just added
+            .take(4) // Keep max 4 messages for context
+        
+        if (recentMessages.isEmpty()) return ""
+        
+        return recentMessages.joinToString("\n") { msg ->
+            if (msg.isUser) "User: ${msg.text}" else "Assistant: ${msg.text.take(200)}${if (msg.text.length > 200) "..." else ""}"
+        }
+    }
+
+    private fun analyzeQueryIntent(query: String, category: Category): QueryIntent {
+        val lowerQuery = query.lowercase()
+        
+        // Detect specific intents based on keywords
+        return when {
+            // Comparison queries
+            lowerQuery.contains("vs") || lowerQuery.contains("versus") || 
+            lowerQuery.contains("compare") || lowerQuery.contains("difference between") ||
+            lowerQuery.contains("better") || lowerQuery.contains("which is best") -> QueryIntent.COMPARISON
+            
+            // How-to queries
+            lowerQuery.startsWith("how to") || lowerQuery.startsWith("how can") || 
+            lowerQuery.startsWith("how do") || lowerQuery.contains("kaise") ||
+            lowerQuery.contains("process") || lowerQuery.contains("steps") -> QueryIntent.HOW_TO
+            
+            // What/Which queries - information seeking
+            lowerQuery.startsWith("what") || lowerQuery.startsWith("which") ||
+            lowerQuery.contains("kya hai") || lowerQuery.contains("kaun sa") ||
+            lowerQuery.contains("tell me about") || lowerQuery.contains("explain") -> QueryIntent.INFORMATION
+            
+            // Problem/Issue queries
+            lowerQuery.contains("problem") || lowerQuery.contains("issue") ||
+            lowerQuery.contains("not working") || lowerQuery.contains("help") ||
+            lowerQuery.contains("what should i do") || lowerQuery.contains("what to do") -> QueryIntent.PROBLEM_SOLVING
+            
+            // Eligibility queries
+            lowerQuery.contains("eligible") || lowerQuery.contains("can i") ||
+            lowerQuery.contains("qualify") || lowerQuery.contains("am i") -> QueryIntent.ELIGIBILITY
+            
+            // Cost/Budget queries
+            lowerQuery.contains("cost") || lowerQuery.contains("fees") ||
+            lowerQuery.contains("price") || lowerQuery.contains("budget") ||
+            lowerQuery.contains("afford") || lowerQuery.contains("expensive") -> QueryIntent.COST
+            
+            // Recommendation queries
+            lowerQuery.contains("recommend") || lowerQuery.contains("suggest") ||
+            lowerQuery.contains("best") || lowerQuery.contains("top") ||
+            lowerQuery.contains("should i") -> QueryIntent.RECOMMENDATION
+            
+            // Document/Requirements queries
+            lowerQuery.contains("documents") || lowerQuery.contains("required") ||
+            lowerQuery.contains("need") || lowerQuery.contains("requirements") -> QueryIntent.REQUIREMENTS
+            
+            // Timeline queries
+            lowerQuery.contains("when") || lowerQuery.contains("how long") ||
+            lowerQuery.contains("duration") || lowerQuery.contains("time") -> QueryIntent.TIMELINE
+            
+            else -> QueryIntent.GENERAL
+        }
+    }
+
+    private fun buildSystemPrompt(category: Category, queryIntent: QueryIntent): String {
+        val basePrompt = when (category) {
+            Category.FINANCE -> """You are an expert financial advisor specializing in Indian banking, loans, and government schemes. You have deep knowledge of education loans, personal finance, government schemes like PMAY and Mudra Yojana, and financial planning for young Indians."""
+            
+            Category.LEGAL -> """You are a knowledgeable legal advisor with expertise in Indian law, particularly consumer rights, employment law, cyber crime, and legal procedures. You provide clear, practical legal guidance while emphasizing when professional legal consultation is necessary."""
+            
+            Category.EDUCATION -> """You are an experienced education counselor and career advisor with comprehensive knowledge of Indian education systems, entrance exams, scholarships, career paths, and skill development programs. You inspire and guide students towards making informed decisions."""
+            
+            else -> """You are Finvaria, an intelligent assistant helping Indian youth navigate finance, legal matters, and education. You provide accurate, practical, and empowering guidance."""
+        }
+        
+        // Add intent-specific guidance to system prompt
+        val intentGuidance = when (queryIntent) {
+            QueryIntent.COMPARISON -> " Focus on providing clear, objective comparisons with specific details."
+            QueryIntent.HOW_TO -> " Provide step-by-step instructions that are easy to follow."
+            QueryIntent.PROBLEM_SOLVING -> " Understand the user's problem and provide practical solutions."
+            QueryIntent.RECOMMENDATION -> " Give personalized recommendations based on the user's situation."
+            else -> ""
+        }
+        
+        return basePrompt + intentGuidance
+    }
+
+    private fun buildResponseInstructions(queryIntent: QueryIntent, userQuery: String): String {
+        return when (queryIntent) {
+            QueryIntent.COMPARISON -> """
+Instructions for your response:
+- Create a clear comparison between the options mentioned
+- Use bullet points or a structured format
+- Highlight key differences in: interest rates, eligibility, amounts, benefits
+- End with a recommendation based on common scenarios
+- Be objective and balanced
+            """.trimIndent()
+            
+            QueryIntent.HOW_TO -> """
+Instructions for your response:
+- Provide a numbered step-by-step guide
+- Start with prerequisites if any
+- Include estimated timelines for each step
+- Mention required documents or resources
+- Add tips to avoid common mistakes
+- Keep steps simple and actionable
+            """.trimIndent()
+            
+            QueryIntent.INFORMATION -> """
+Instructions for your response:
+- Start with a brief, clear definition or overview
+- Provide key details: eligibility, requirements, benefits
+- Include specific numbers (amounts, percentages, timelines)
+- Add practical examples if relevant
+- Mention where to find more information
+- Keep it structured and easy to scan
+            """.trimIndent()
+            
+            QueryIntent.PROBLEM_SOLVING -> """
+Instructions for your response:
+- Acknowledge the problem empathetically
+- Provide immediate actionable steps
+- Prioritize solutions (what to do first, second, etc.)
+- Mention relevant laws, rights, or schemes that can help
+- Include contact information for relevant authorities
+- Warn about time-sensitive actions if any
+            """.trimIndent()
+            
+            QueryIntent.ELIGIBILITY -> """
+Instructions for your response:
+- Start by directly answering if they're likely eligible (Yes/No/Maybe)
+- List specific eligibility criteria as bullet points
+- Explain each criterion clearly
+- Mention any age, income, or education requirements
+- Suggest alternatives if they might not qualify
+- Tell them how to verify their eligibility officially
+            """.trimIndent()
+            
+            QueryIntent.COST -> """
+Instructions for your response:
+- Start with the cost range or specific amount
+- Break down costs: tuition/fees, processing, hidden costs
+- Mention any discounts, subsidies, or waivers available
+- Compare with alternatives if relevant
+- Suggest scholarship or financial aid options
+- Include payment timeline information
+            """.trimIndent()
+            
+            QueryIntent.RECOMMENDATION -> """
+Instructions for your response:
+- Provide 2-3 specific recommendations
+- For each recommendation, explain WHY it's suitable
+- Include key details: rates, amounts, eligibility, benefits
+- Rank them if possible (Best, Good, Alternative)
+- Consider the user's perspective (student, young professional, etc.)
+- End with next steps to pursue the recommendation
+            """.trimIndent()
+            
+            QueryIntent.REQUIREMENTS -> """
+Instructions for your response:
+- List all required documents as bullet points
+- For each document, briefly explain its purpose
+- Mention where to obtain each document
+- Note any specific formats or validity requirements
+- Highlight critical documents vs optional ones
+- Include typical processing time if relevant
+            """.trimIndent()
+            
+            QueryIntent.TIMELINE -> """
+Instructions for your response:
+- Provide specific timeframes (days, weeks, months)
+- Break timeline into phases if it's a multi-step process
+- Mention deadlines if any are critical
+- Note factors that might extend or shorten the timeline
+- Add tips to speed up the process
+- Include when to start for time-sensitive matters
+            """.trimIndent()
+            
+            QueryIntent.GENERAL -> """
+Instructions for your response:
+- Understand what the user is really asking
+- Provide a helpful, conversational response
+- Be specific with names, numbers, and details
+- Offer to help with related questions
+- Keep the tone friendly and encouraging
+            """.trimIndent()
         }
     }
 
@@ -701,4 +977,17 @@ Go ahead, ask me anything! 🚀"""
     fun getEducationGuidanceById(id: String): EducationGuidance? {
         return KnowledgeBase.educationGuidance.find { it.id == id }
     }
+}
+
+enum class QueryIntent {
+    COMPARISON,       // "X vs Y", "difference between", "which is better"
+    HOW_TO,          // "how to", "steps to", "process"
+    INFORMATION,     // "what is", "tell me about", "explain"
+    PROBLEM_SOLVING, // "I have a problem", "what should I do", "help"
+    ELIGIBILITY,     // "am I eligible", "can I apply", "qualify"
+    COST,            // "how much", "fees", "price", "budget"
+    RECOMMENDATION,  // "suggest", "recommend", "best option"
+    REQUIREMENTS,    // "documents needed", "requirements"
+    TIMELINE,        // "how long", "when", "deadline"
+    GENERAL          // Default/other queries
 }

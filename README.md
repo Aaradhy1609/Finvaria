@@ -37,6 +37,20 @@ Finvaria is your all-in-one companion for navigating the critical decisions of y
 
 - **On-device AI**: Powered by RunAnywhere SDK
 - **Context-Aware**: Specialized responses for finance, legal, or education queries
+- **Smart Query Understanding**: Automatically detects query intent (comparison, how-to,
+  eligibility, etc.) and responds appropriately
+- **Conversation Memory**: Remembers recent context for coherent multi-turn conversations
+- **Rich Knowledge Integration**: Provides detailed information from curated database with specific
+  numbers, dates, and requirements
+- **Intent-Based Responses**:
+    - Comparisons with structured differences
+    - Step-by-step guides for "how-to" questions
+    - Empathetic problem-solving with actionable steps
+    - Direct eligibility answers with criteria
+    - Comprehensive cost breakdowns
+    - Personalized recommendations with rankings
+    - Document requirements with sources
+    - Timeline estimates with phases
 - **Offline Capable**: Works without internet after model download
 - **Multilingual Support**: English, Hindi, Hinglish, and 8 other Indian languages
 - **Smart Knowledge Base**: Falls back to curated information when AI isn't available
